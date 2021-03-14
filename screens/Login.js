@@ -9,63 +9,37 @@ import {
   Text
 } from "react-native";
 
-import { Rajdhani_600SemiBold } from "@expo-google-fonts/rajdhani";
-import * as Font from "expo-font";
-
 const bgImage = require("../assets/background1.png");
 const appIcon = require("../assets/appIcon.png");
 const appName = require("../assets/appName.png");
 
 export default class LoginScreen extends Component {
-  constructor() {
-    super();
-    this.state = {
-      fontLoaded: false
-    };
-  }
-
-  async loadFonts() {
-    await Font.loadAsync({
-      Rajdhani_600SemiBold: Rajdhani_600SemiBold
-    });
-    this.setState({ fontLoaded: true });
-  }
-
-  componentDidMount() {
-    this.loadFonts();
-  }
-
   render() {
-    const { fontLoaded } = this.state;
-    if (fontLoaded) {
-      return (
-        <View style={styles.container}>
-          <ImageBackground source={bgImage} style={styles.bgImage}>
-            <View style={styles.upperContainer}>
-              <Image source={appIcon} style={styles.appIcon} />
-              <Image source={appName} style={styles.appName} />
-            </View>
-            <View style={styles.lowerContainer}>
-              <TextInput
-                style={styles.textinput}
-                onChangeText={text => {}}
-                placeholder={"Name"}
-              />
-              <TextInput
-                style={[styles.textinput, { marginTop: 20 }]}
-                onChangeText={text => {}}
-                placeholder={"Enter Password"}
-              />
-              <TouchableOpacity style={[styles.button, { marginTop: 20 }]}>
-                <Text style={styles.buttonText}>Login</Text>
-              </TouchableOpacity>
-            </View>
-          </ImageBackground>
-        </View>
-      );
-    }
-
-    return null;
+    return (
+      <View style={styles.container}>
+        <ImageBackground source={bgImage} style={styles.bgImage}>
+          <View style={styles.upperContainer}>
+            <Image source={appIcon} style={styles.appIcon} />
+            <Image source={appName} style={styles.appName} />
+          </View>
+          <View style={styles.lowerContainer}>
+            <TextInput
+              style={styles.textinput}
+              onChangeText={text => {}}
+              placeholder={"Name"}
+            />
+            <TextInput
+              style={[styles.textinput, { marginTop: 20 }]}
+              onChangeText={text => {}}
+              placeholder={"Enter Password"}
+            />
+            <TouchableOpacity style={[styles.button, { marginTop: 20 }]}>
+              <Text style={styles.buttonText}>Login</Text>
+            </TouchableOpacity>
+          </View>
+        </ImageBackground>
+      </View>
+    );
   }
 }
 
