@@ -6,15 +6,38 @@ import {
   Image,
   TextInput,
   TouchableOpacity,
-  Text
+  Text,
+  Alert
 } from "react-native";
+import firebase from "firebase";
 
 const bgImage = require("../assets/background1.png");
 const appIcon = require("../assets/appIcon.png");
 const appName = require("../assets/appName.png");
 
 export default class LoginScreen extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      email: "",
+      password: ""
+    };
+  }
+
+  handleLogin = (email, password) => {
+    firebase
+      .auth()
+      .signInWithEmailAndPassword(email, password)
+      .then(() => {
+        this.props.navigation.navigate("BottomTab");
+      })
+      .catch(error => {
+        Alert.alert(error.message);
+      });
+  };
+
   render() {
+    const { email, password } = this.state;
     return (
       <View style={styles.container}>
         <ImageBackground source={bgImage} style={styles.bgImage}>
@@ -25,19 +48,19 @@ export default class LoginScreen extends Component {
           <View style={styles.lowerContainer}>
             <TextInput
               style={styles.textinput}
-              onChangeText={text => {}}
-              placeholder={"Name"}
+              onChangeText={text => this.setState({ email: text })}
+              placeholder={"Enter Email"}
+              autoFocus
             />
             <TextInput
               style={[styles.textinput, { marginTop: 20 }]}
-              onChangeText={text => {}}
+              onChangeText={text => this.setState({ password: text })}
               placeholder={"Enter Password"}
+              secureTextEntry
             />
             <TouchableOpacity
               style={[styles.button, { marginTop: 20 }]}
-              onPress={() => {
-                this.props.navigation.navigate("BottomTab");
-              }}
+              onPress={() => this.handleLogin(email, password)}
             >
               <Text style={styles.buttonText}>Login</Text>
             </TouchableOpacity>

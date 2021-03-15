@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Rajdhani_600SemiBold } from "@expo-google-fonts/rajdhani";
 import * as Font from "expo-font";
-
+import db from "./config";
 import LoginScreen from "./screens/Login";
 import BottomTabNavigator from "./components/BottomTabNavigator";
 
