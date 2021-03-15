@@ -33,7 +33,12 @@ export default class LoginScreen extends Component {
               onChangeText={text => {}}
               placeholder={"Enter Password"}
             />
-            <TouchableOpacity style={[styles.button, { marginTop: 20 }]}>
+            <TouchableOpacity
+              style={[styles.button, { marginTop: 20 }]}
+              onPress={() => {
+                this.props.navigation.navigate("BottomTab");
+              }}
+            >
               <Text style={styles.buttonText}>Login</Text>
             </TouchableOpacity>
           </View>
