@@ -7,7 +7,9 @@ import {
   Text,
   FlatList
 } from "react-native";
+import { Avatar, ListItem, Icon } from "react-native-elements";
 import db from "../config";
+
 export default class SearchScreen extends Component {
   constructor(props) {
     super(props);
@@ -106,6 +108,63 @@ export default class SearchScreen extends Component {
     }
   };
 
+  renderItem = ({ item, i }) => {
+    var date = item.date
+      .toDate()
+      .toString()
+      .split(" ")
+      .splice(0, 4)
+      .join(" ");
+
+    var transactionType =
+      item.transaction_type === "issue" ? "issued" : "returned";
+    return (
+      <View style={{ borderWidth: 1 }}>
+        <ListItem key={i} bottomDivider>
+          <Icon type={"antdesign"} name={"book"} size={40} />
+          <ListItem.Content>
+            <ListItem.Title style={styles.title}>
+              {`${item.book_name} ( ${item.book_id} )`}
+            </ListItem.Title>
+            <ListItem.Subtitle style={styles.subtitle}>
+              {`This book ${transactionType} by ${item.student_name}`}
+            </ListItem.Subtitle>
+            <View style={styles.lowerLeftContaiiner}>
+              <View style={styles.transactionContainer}>
+                <Text
+                  style={[
+                    styles.transactionText,
+                    {
+                      color:
+                        item.transaction_type === "issue"
+                          ? "#78D304"
+                          : "#0364F4"
+                    }
+                  ]}
+                >
+                  {item.transaction_type.charAt(0).toUpperCase() +
+                    item.transaction_type.slice(1)}
+                </Text>
+                <Icon
+                  type={"ionicon"}
+                  name={
+                    item.transaction_type === "issue"
+                      ? "checkmark-circle-outline"
+                      : "arrow-redo-circle-outline"
+                  }
+                  color={
+                    item.transaction_type === "issue" ? "#78D304" : "#0364F4"
+                  }
+                />
+              </View>
+              <Text style={styles.date}>{date}</Text>
+            </View>
+          </ListItem.Content>
+        </ListItem>
+      </View>
+    );
+  };
+
   render() {
     const { searchText, allTransactions } = this.state;
     return (
@@ -129,14 +188,7 @@ export default class SearchScreen extends Component {
         <View style={styles.lowerContainer}>
           <FlatList
             data={allTransactions}
-            renderItem={({ item }) => (
-              <View style={{ borderBottomWidth: 2 }}>
-                <Text>{"Book Id: " + item.book_id}</Text>
-                <Text>{"Student id: " + item.student_id}</Text>
-                <Text>{"Transaction Type: " + item.transaction_type}</Text>
-                <Text>{"Date: " + item.date.toDate()}</Text>
-              </View>
-            )}
+            renderItem={this.renderItem}
             keyExtractor={(item, index) => index.toString()}
             onEndReached={() => this.fetchMoreTransactions(searchText)}
             onEndReachedThreshold={0.7}
@@ -173,6 +225,7 @@ const styles = StyleSheet.create({
     borderWidth: 3,
     fontSize: 18,
     backgroundColor: "#5653D4",
+    fontFamily: "Rajdhani_600SemiBold",
     color: "#FFFFFF"
   },
   scanbutton: {
@@ -191,8 +244,33 @@ const styles = StyleSheet.create({
   },
   lowerContainer: {
     flex: 0.8,
-    backgroundColor: "#FFFFFF",
-    borderTopRightRadius: 37,
-    borderTopLeftRadius: 37
+    backgroundColor: "#FFFFFF"
+  },
+  title: {
+    fontSize: 20,
+    fontFamily: "Rajdhani_600SemiBold"
+  },
+  subtitle: {
+    fontSize: 16,
+    fontFamily: "Rajdhani_600SemiBold"
+  },
+  lowerLeftContaiiner: {
+    alignSelf: "flex-end",
+    marginTop: -40
+  },
+  transactionContainer: {
+    flexDirection: "row",
+    justifyContent: "space-evenly",
+    alignItems: "center"
+  },
+  transactionText: {
+    fontSize: 20,
+
+    fontFamily: "Rajdhani_600SemiBold"
+  },
+  date: {
+    fontSize: 12,
+    fontFamily: "Rajdhani_600SemiBold",
+    paddingTop: 5
   }
 });

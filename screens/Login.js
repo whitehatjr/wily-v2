@@ -7,7 +7,8 @@ import {
   TextInput,
   TouchableOpacity,
   Text,
-  Alert
+  Alert,
+  KeyboardAvoidingView
 } from "react-native";
 import firebase from "firebase";
 
@@ -39,7 +40,7 @@ export default class LoginScreen extends Component {
   render() {
     const { email, password } = this.state;
     return (
-      <View style={styles.container}>
+      <KeyboardAvoidingView behavior="padding" style={styles.container}>
         <ImageBackground source={bgImage} style={styles.bgImage}>
           <View style={styles.upperContainer}>
             <Image source={appIcon} style={styles.appIcon} />
@@ -50,12 +51,14 @@ export default class LoginScreen extends Component {
               style={styles.textinput}
               onChangeText={text => this.setState({ email: text })}
               placeholder={"Enter Email"}
+              placeholderTextColor={"#FFFFFF"}
               autoFocus
             />
             <TextInput
               style={[styles.textinput, { marginTop: 20 }]}
               onChangeText={text => this.setState({ password: text })}
               placeholder={"Enter Password"}
+              placeholderTextColor={"#FFFFFF"}
               secureTextEntry
             />
             <TouchableOpacity
@@ -66,7 +69,7 @@ export default class LoginScreen extends Component {
             </TouchableOpacity>
           </View>
         </ImageBackground>
-      </View>
+      </KeyboardAvoidingView>
     );
   }
 }
@@ -83,7 +86,7 @@ const styles = StyleSheet.create({
   },
 
   upperContainer: {
-    flex: 0.6,
+    flex: 0.5,
     justifyContent: "center",
     alignItems: "center"
   },
@@ -99,26 +102,20 @@ const styles = StyleSheet.create({
     resizeMode: "contain"
   },
   lowerContainer: {
-    flex: 0.4,
-    justifyContent: "center",
-    alignItems: "center",
-    borderTopRightRadius: 76,
-    borderTopLeftRadius: 76,
-    backgroundColor: "#FFFFFF",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.8,
-    shadowRadius: 13,
-    elevation: 10
+    flex: 0.5,
+    alignItems: "center"
   },
   textinput: {
     width: "75%",
     height: 55,
     padding: 10,
-    borderColor: "gray",
-    borderWidth: 2,
+    borderColor: "#FFFFFF",
+    borderWidth: 4,
     borderRadius: 10,
-    fontSize: 18
+    fontSize: 18,
+    color: "#FFFFFF",
+    fontFamily: "Rajdhani_600SemiBold",
+    backgroundColor: "#5653D4"
   },
   button: {
     width: "43%",

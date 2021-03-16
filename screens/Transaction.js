@@ -27,9 +27,12 @@ export default class TransactionScreen extends Component {
       studentId: "",
       domState: "normal",
       hasCameraPermissions: null,
-      scanned: false
+      scanned: false,
+      bookName: "",
+      studentName: ""
     };
   }
+
   getCameraPermissions = async domState => {
     const { status } = await Permissions.askAsync(Permissions.CAMERA);
 
@@ -63,6 +66,9 @@ export default class TransactionScreen extends Component {
 
   handleTransaction = async () => {
     var { bookId, studentId } = this.state;
+    await this.getBookDetails(bookId);
+    await this.getStudentDetails(studentId);
+
     var transactionType = await this.checkBookAvailability(bookId);
 
     if (!transactionType) {
@@ -75,7 +81,8 @@ export default class TransactionScreen extends Component {
       );
 
       if (isEligible) {
-        this.initiateBookIssue(bookId, studentId);
+        var { bookName, studentName } = this.state;
+        this.initiateBookIssue(bookId, studentId, bookName, studentName);
       }
 
       Alert.alert("Book issued to the student!");
@@ -86,11 +93,40 @@ export default class TransactionScreen extends Component {
       );
 
       if (isEligible) {
-        this.initiateBookReturn(bookId, studentId);
+        var { bookName, studentName } = this.state;
+        this.initiateBookReturn(bookId, studentId, bookName, studentName);
       }
 
       Alert.alert("Book returned to the library!");
     }
+  };
+
+  getBookDetails = bookId => {
+    bookId = bookId.trim();
+    db.collection("books")
+      .where("book_id", "==", bookId)
+      .get()
+      .then(snapshot => {
+        snapshot.docs.map(doc => {
+          this.setState({
+            bookName: doc.data().book_details.book_name
+          });
+        });
+      });
+  };
+
+  getStudentDetails = studentId => {
+    studentId = studentId.trim();
+    db.collection("students")
+      .where("student_id", "==", studentId)
+      .get()
+      .then(snapshot => {
+        snapshot.docs.map(doc => {
+          this.setState({
+            studentName: doc.data().student_details.student_name
+          });
+        });
+      });
   };
 
   checkBookAvailability = async bookId => {
@@ -168,11 +204,13 @@ export default class TransactionScreen extends Component {
     return isStudentEligible;
   };
 
-  initiateBookIssue = async (bookId, studentId) => {
+  initiateBookIssue = async (bookId, studentId, bookName, studentName) => {
     //add a transaction
     db.collection("transactions").add({
       student_id: studentId,
+      student_name: studentName,
       book_id: bookId,
+      book_name: bookName,
       date: firebase.firestore.Timestamp.now().toDate(),
       transaction_type: "issue"
     });
@@ -196,11 +234,13 @@ export default class TransactionScreen extends Component {
     });
   };
 
-  initiateBookReturn = async (bookId, studentId) => {
+  initiateBookReturn = async (bookId, studentId, bookName, studentName) => {
     //add a transaction
     db.collection("transactions").add({
       student_id: studentId,
+      student_name: studentName,
       book_id: bookId,
+      book_name: bookName,
       date: firebase.firestore.Timestamp.now().toDate(),
       transaction_type: "return"
     });
@@ -332,6 +372,7 @@ const styles = StyleSheet.create({
     borderWidth: 3,
     fontSize: 18,
     backgroundColor: "#5653D4",
+    fontFamily: "Rajdhani_600SemiBold",
     color: "#FFFFFF"
   },
   scanbutton: {
